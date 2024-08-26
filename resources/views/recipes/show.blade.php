@@ -1,24 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{ $recipe->name }}</h1>
-    <p>Author: {{ $recipe->author }}</p>
-    <p>Meal Time: {{ $recipe->meal_time }}</p>
-
-    <h3>Reviews</h3>
-    <form action="{{ route('reviews.store') }}" method="POST">
-        @csrf
-        <input type="hidden" name="recipe_id" value="{{ $recipe->id }}">
-        <input type="number" name="rating" max="5" min="1">
-        <textarea name="text" placeholder="Write a review"></textarea>
-        <button type="submit">Submit Review</button>
-    </form>
-
-    @foreach($recipe->reviews as $review)
-        <div>
-            <strong>{{ $review->author->username }}</strong>
-            <p>Rating: {{ $review->rating }}</p>
-            <p>{{ $review->text }}</p>
+<div class="container">
+    <div class="card">
+        <div class="card-header">{{ $recipe->title }}</div>
+        <div class="card-body">
+            <p><strong>Description:</strong> {{ $recipe->description }}</p>
+            <p><strong>Ingredients:</strong> {{ $recipe->ingredients }}</p>
+            <p><strong>Steps:</strong> {{ $recipe->steps }}</p>
+            @if ($recipe->image)
+                <img src="{{ asset('storage/' . $recipe->image) }}" class="img-fluid" alt="Recipe Image">
+            @endif
         </div>
-    @endforeach
+    </div>
+</div>
 @endsection

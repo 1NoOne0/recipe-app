@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeController extends Controller
 {
@@ -13,7 +12,6 @@ class RecipeController extends Controller
         $recipes = Recipe::all();
         return view('recipes.index', compact('recipes'));
     }
-    
 
     public function create()
     {
@@ -22,14 +20,26 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
-        $recipe = new Recipe();
-        $recipe->name = $request->name;
-        $recipe->author = Auth::user()->email;
-        $recipe->meal_time = $request->meal_time;
-        $recipe->save();
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'ingredients' => 'required|string',
+            'steps' => 'required|string',
+            'image' => 'nullable|image|max:2048',
+        ]);
 
-        // Optionally add ingredients and tools here
-        // $recipe->ingredients()->attach([...]);
+        $recipe = new Recipe();
+        $recipe->title = $request->title;
+        $recipe->description = $request->description;
+        $recipe->ingredients = $request->ingredients;
+        $recipe->steps = $request->steps;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $recipe->image = $imagePath;
+        }
+
+        $recipe->save();
 
         return redirect()->route('recipes.index');
     }
