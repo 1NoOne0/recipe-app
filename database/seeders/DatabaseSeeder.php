@@ -1,22 +1,24 @@
 <?php
 
-namespace Database\Seeders;
-
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Other seeders can be called here
+        $this->call(RolesAndPermissionsSeeder::class);
+
+        // Optionally, create an admin user
+        User::factory()->create([
+            'username' => 'AdminUser', // Use 'username' instead of 'name'
+            'email' => 'mrdoofenshmirtz02@gmail.com',
+            'password' => bcrypt('password123'),
+        ])->assignRole('admin');
 
         User::factory()->create([
-            'name' => 'Test User',
+            'username' => 'TestUser', // Use 'username' instead of 'name'
             'email' => 'test@example.com',
         ]);
     }

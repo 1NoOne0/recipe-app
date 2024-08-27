@@ -4,32 +4,36 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateReviewsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
+            $table->id(); // Primary key
             $table->string('author_email');
             $table->unsignedBigInteger('recipe_id');
             $table->integer('rating');
-            $table->timestamp('date')->useCurrent();
-            $table->string('text')->nullable();
-            $table->primary(['author_email', 'recipe_id']);
+            $table->text('text');
+            $table->timestamps(); // created_at and updated_at
+
+            // Foreign key constraints
             $table->foreign('author_email')->references('email')->on('users')->onDelete('cascade');
             $table->foreign('recipe_id')->references('id')->on('recipes')->onDelete('cascade');
-            $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('reviews');
     }
-};
+}
